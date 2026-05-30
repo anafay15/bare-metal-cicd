@@ -7,17 +7,15 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    # THIS is the crucial line. It routes the job to the runner inside your VM.
+    runs-on: self-hosted 
+    
     steps:
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # The script executed ON the remote VM
-          script: |
-            cd ~/project1
-            git pull origin main
-            docker compose up -d --build
-            docker system prune -f
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build and Deploy Container
+        run: |
+          cd /home/vboxuser/project1
+          docker compose up -d --build
+          docker system prune -f
