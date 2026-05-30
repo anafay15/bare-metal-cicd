@@ -1,0 +1,27 @@
+name: Deploy to Production VM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: 192.168.100.216
+          username: vboxuser
+          key: b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACDE9biOL603c7a+ZEmo3/0V8xKwWUHMltnsCfOgr0QqQAAAAJhJdTBTSXUw
+UwAAAAtzc2gtZWQyNTUxOQAAACDE9biOL603c7a+ZEmo3/0V8xKwWUHMltnsCfOgr0QqQA
+AAAEDZHEsN8EZXPPvMlJuvGHsF87MVJwsEv/tptTpaJEumhsT1uI4vrTdztr5kSajf/RXz
+ErBZQcyW2ewJ86CvRCpAAAAADmdpdGh1Yi1hY3Rpb25zAQIDBAUGBw==
+          # The script executed ON the remote VM
+          script: |
+            cd ~/project1
+            git pull origin main
+            docker compose up -d --build
+            docker system prune -f
